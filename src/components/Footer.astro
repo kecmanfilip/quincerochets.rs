@@ -29,7 +29,7 @@ const col2 = products.slice(6);
         <h4>Modeli</h4>
         <ul>
           {col1.map(p => (
-            <li><a href={`/kolekcija/${p.data.slug}/`}>{p.data.name}</a></li>
+            <li><a href={`/kolekcija/${p.id}/`}>{p.data.name}</a></li>
           ))}
         </ul>
       </div>
@@ -37,7 +37,7 @@ const col2 = products.slice(6);
         <h4>Još modela</h4>
         <ul>
           {col2.map(p => (
-            <li><a href={`/kolekcija/${p.data.slug}/`}>{p.data.name}</a></li>
+            <li><a href={`/kolekcija/${p.id}/`}>{p.data.name}</a></li>
           ))}
         </ul>
       </div>

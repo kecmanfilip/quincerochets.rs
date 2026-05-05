@@ -1,6 +1,5 @@
 ---
 name: "Evie"
-slug: "evie"
 price: 4500
 size: "S"
 size_label: "Mala torbica"

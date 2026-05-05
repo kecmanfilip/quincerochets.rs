@@ -4,7 +4,6 @@ const products = defineCollection({
   type: 'content',
   schema: z.object({
     name: z.string(),
-    slug: z.string(),
     price: z.number(),
     size: z.enum(['XS', 'S', 'M', 'M-L', 'L']),
     size_label: z.string(),
@@ -31,7 +30,6 @@ const blog = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    slug: z.string(),
     date: z.date(),
     excerpt: z.string(),
     cover_image: z.string().optional(),

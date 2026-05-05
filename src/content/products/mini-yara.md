@@ -1,6 +1,5 @@
 ---
 name: "Mini Yara"
-slug: "mini-yara"
 price: 3800
 size: "S"
 size_label: "Mala torbica"

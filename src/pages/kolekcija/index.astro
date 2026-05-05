@@ -77,7 +77,7 @@ function getSizeFilter(size: string) {
     <div class="product-grid container" id="productGrid">
       {products.map(p => (
         <ProductCard
-          slug={p.data.slug}
+          slug={p.id}
           name={p.data.name}
           size={p.data.size}
           type={p.data.type}

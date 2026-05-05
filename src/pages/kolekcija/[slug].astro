@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   return products
     .filter(p => !p.data.draft)
     .map(p => ({
-      params: { slug: p.data.slug },
+      params: { slug: p.id.replace(/\.md$/, "") },
       props: { product: p },
     }));
 }
@@ -20,11 +20,11 @@ const { data } = product;
 
 const allProducts = await getCollection('products');
 const relatedProducts = data.related
-  .map(slug => allProducts.find(p => p.data.slug === slug))
+  .map(slug => allProducts.find(p => p.id.replace(/\.md$/, '') === slug))
   .filter(Boolean)
   .filter(p => !p.data.draft);
 
-const url = `https://quincerochets.rs/kolekcija/${data.slug}/`;
+const url = `https://quincerochets.rs/kolekcija/${product.id.replace(/\.md$/, "")}/`;
 const imgUrl = data.images[0]?.src || 'https://quincerochets.rs/images/logo.jpg';
 
 const schema = JSON.stringify({
@@ -149,7 +149,7 @@ const colorMap: Record<string, string> = {
 
         <div class="product-cta-box">
           <p>Svaki komad se izrađuje na porudžbinu. Kontaktiraj nas putem Instagrama ili forme za porudžbinu.</p>
-          <a href={`/kontakt/?model=${data.slug}`} class="btn btn-gold btn-full" style="margin-bottom:0.8rem">Poruči {data.name} →</a>
+          <a href={`/kontakt/?model=${product.id.replace(/\.md$/, "")}`} class="btn btn-gold btn-full" style="margin-bottom:0.8rem">Poruči {data.name} →</a>
           <a href="https://www.instagram.com/quincecrochets/" target="_blank" rel="noopener noreferrer" class="btn btn-full" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)">DM na Instagram @quincecrochets</a>
           <p class="product-cta-box-note" style="margin-top:0.8rem">Dostava kurirskom službom na celoj teritoriji Srbije.</p>
         </div>
@@ -166,7 +166,7 @@ const colorMap: Record<string, string> = {
         <div class="related-grid">
           {relatedProducts.map(p => (
             <ProductCard
-              slug={p.data.slug}
+              slug={p.id}
               name={p.data.name}
               size={p.data.size}
               type={p.data.type}

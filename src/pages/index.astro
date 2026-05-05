@@ -11,7 +11,7 @@ const products = allProducts.filter(p => !p.data.draft);
 
 const featuredSlugs = ['fiona', 'milla', 'yara', 'dorothy', 'gia', 'maisie'];
 const featured = featuredSlugs
-  .map(slug => products.find(p => p.data.slug === slug))
+  .map(slug => products.find(p => p.id === slug))
   .filter(Boolean);
 
 const schema = JSON.stringify({
@@ -48,7 +48,7 @@ const schema = JSON.stringify({
       "itemListElement": products.map((p, i) => ({
         "@type": "ListItem",
         "position": i + 1,
-        "url": `https://quincerochets.rs/kolekcija/${p.data.slug}/`,
+        "url": `https://quincerochets.rs/kolekcija/${p.id}/`,
         "name": p.data.name
       }))
     }
@@ -97,7 +97,7 @@ const schema = JSON.stringify({
     <div class="product-grid container">
       {featured.map(p => p && (
         <ProductCard
-          slug={p.data.slug}
+          slug={p.id}
           name={p.data.name}
           size={p.data.size}
           type={p.data.type}

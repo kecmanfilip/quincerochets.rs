@@ -9,7 +9,7 @@ export async function getStaticPaths() {
   return posts
     .filter(p => p.data.published)
     .map(p => ({
-      params: { slug: p.data.slug },
+      params: { slug: p.id.replace(/\.md$/, "") },
       props: { post: p },
     }));
 }
@@ -20,11 +20,11 @@ const { Content } = await render();
 
 const allPosts = await getCollection('blog');
 const relatedPosts = allPosts
-  .filter(p => p.data.published && p.data.slug !== data.slug)
+  .filter(p => p.data.published && p.id.replace(/\.md$/, '') !== post.id.replace(/\.md$/, ''))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
 
-const url = `https://quincerochets.rs/blog/${data.slug}/`;
+const url = `https://quincerochets.rs/blog/${post.id.replace(/\.md$/, "")}/`;
 const formattedDate = data.date.toLocaleDateString('sr-RS', { day: 'numeric', month: 'long', year: 'numeric' });
 
 const schema = JSON.stringify({
@@ -111,7 +111,7 @@ const schema = JSON.stringify({
         </div>
         <div class="blog-grid" style="margin-top:2rem">
           {relatedPosts.map(p => (
-            <a href={`/blog/${p.data.slug}/`} class="blog-card">
+            <a href={`/blog/${p.id}/`} class="blog-card">
               <div class="blog-card-image">
                 {p.data.cover_image ? (
                   <img src={p.data.cover_image} alt={p.data.title} width="400" height="260" loading="lazy" />

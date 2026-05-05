@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 const allProducts = await getCollection('products');
 const products = allProducts.filter(p => !p.data.draft).sort((a, b) => {
   const order = ['gia','evie','mini-fiona','fiona','yara','mini-yara','emma','maisie','dorothy','claire','zara','milla'];
-  return order.indexOf(a.data.slug) - order.indexOf(b.data.slug);
+  return order.indexOf(a.id) - order.indexOf(b.id);
 });
 ---
 
@@ -21,7 +21,7 @@ const products = allProducts.filter(p => !p.data.draft).sort((a, b) => {
       <a href="/kolekcija/" class="nav-link">Kolekcija <span class="nav-chevron">▾</span></a>
       <div class="nav-dropdown" role="menu">
         {products.map(p => (
-          <a href={`/kolekcija/${p.data.slug}/`} class="dropdown-item" role="menuitem">
+          <a href={`/kolekcija/${p.id}/`} class="dropdown-item" role="menuitem">
             <span>{p.data.name}</span>
             <span class="dropdown-item-size">{p.data.size}</span>
           </a>
@@ -42,7 +42,7 @@ const products = allProducts.filter(p => !p.data.draft).sort((a, b) => {
     <div class="nav-mobile-section-title">Kolekcija</div>
     <div class="nav-mobile-grid">
       {products.map(p => (
-        <a href={`/kolekcija/${p.data.slug}/`} class="nav-mobile-model">{p.data.name}</a>
+        <a href={`/kolekcija/${p.id}/`} class="nav-mobile-model">{p.data.name}</a>
       ))}
     </div>
     <a href="/blog/" class="nav-mobile-link">Blog</a>

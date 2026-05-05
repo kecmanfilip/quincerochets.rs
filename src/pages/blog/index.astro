@@ -40,7 +40,7 @@ const posts = allPosts
       <div class="blog-grid container">
         {posts.map(post => (
           <BlogCard
-            slug={post.data.slug}
+            slug={post.id}
             title={post.data.title}
             date={post.data.date}
             excerpt={post.data.excerpt}
