@@ -36,6 +36,7 @@ const products = defineCollection({
     })).default([]),
     has_pdf_guide: z.boolean().default(false),
     pdf_guide_url: z.string().optional(),
+    wearing_guide: z.string().optional(),
     // SEO
     seo_title: z.string().optional(),
     seo_description: z.string().optional(),

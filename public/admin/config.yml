@@ -57,8 +57,8 @@ collections:
         multiple: true
         required: false
       # Šta staje u torbu
-      - { label: "Video (Šta staje)", name: "fits_video", widget: "string", hint: "YouTube URL npr. https://youtube.com/watch?v=...", required: false }
-      - { label: "Opis šta staje", name: "fits_description", widget: "markdown", hint: "Tekstualni opis šta sve može da stane u torbu", required: false }
+      - { label: "🎥 Video — Šta staje u torbu?", name: "fits_video", widget: "string", hint: "Nalepi YouTube link. Npr: https://youtube.com/watch?v=...", required: false }
+      - { label: "📝 Tekst — Šta staje u torbu?", name: "fits_description", widget: "markdown", hint: "Opiši šta sve može da stane (telefon, novčanik, šminka...). Ovo se pojavljuje pored videa.", required: false }
       # FAQ za tu torbu
       - label: "FAQ za ovu torbicu"
         name: "product_faq"
@@ -67,17 +67,19 @@ collections:
         fields:
           - { label: "Pitanje", name: "question", widget: "string" }
           - { label: "Odgovor", name: "answer", widget: "text" }
+      # Style guide / Kako nositi
+      - { label: "📖 Vodič za nošenje (tekst)", name: "wearing_guide", widget: "markdown", hint: "Napiši kako se torbica najbolje nosi: uz kakve outfite, za koje prilike, sa čim se uklapa. Npr. 'Idealna za letnje šetnje uz lanenu haljinu i sandale...'", required: false }
       # Lookbook
-      - label: "Lookbook slike"
+      - label: "📸 Lookbook slike (outfit ideje)"
         name: "lookbook_images"
         widget: "list"
         required: false
         fields:
           - { label: "Slika", name: "src", widget: "image" }
           - { label: "Alt tekst", name: "alt", widget: "string" }
-          - { label: "Opis", name: "caption", widget: "string", hint: "npr. 'Fiona + boho haljina'", required: false }
-      - { label: "Ima PDF vodič", name: "has_pdf_guide", widget: "boolean", default: false }
-      - { label: "PDF vodič URL", name: "pdf_guide_url", widget: "string", hint: "Putanja do PDF fajla", required: false }
+          - { label: "Opis outfita", name: "caption", widget: "string", hint: "npr. 'Claire + bež mantil + čizme na petu'", required: false }
+      - { label: "📄 Ima PDF vodič", name: "has_pdf_guide", widget: "boolean", default: false }
+      - { label: "📄 PDF vodič URL", name: "pdf_guide_url", widget: "string", hint: "Putanja do PDF fajla, npr. /images/uploads/claire-guide.pdf", required: false }
       # SEO
       - { label: "SEO naslov", name: "seo_title", widget: "string", required: false }
       - { label: "SEO opis", name: "seo_description", widget: "text", required: false }
@@ -108,6 +110,8 @@ collections:
 
   - name: "settings"
     label: "Podešavanja"
+    editor:
+      preview: false
     files:
       - label: "Sajt"
         name: "settings"

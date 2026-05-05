@@ -108,6 +108,7 @@ const hasGallery = data.images.length > 1;
 const hasFitsSection = !!(youtubeEmbed || data.fits_description);
 const hasProductFaq = data.product_faq && data.product_faq.length > 0;
 const hasLookbook = data.lookbook_images && data.lookbook_images.length > 0;
+const hasWearingGuide = !!data.wearing_guide;
 ---
 
 <Layout
@@ -260,14 +261,33 @@ const hasLookbook = data.lookbook_images && data.lookbook_images.length > 0;
       </section>
     )}
 
-    {/* Lookbook / Style Guide */}
-    {hasLookbook && (
-      <section class="product-section bg-cream" aria-labelledby="lookbook-heading">
-        <div class="container">
+    {/* Wearing Guide */}
+    {hasWearingGuide && (
+      <section class="product-section bg-cream" aria-labelledby="guide-heading">
+        <div class="container" style="max-width: 720px">
           <div class="section-header">
             <span class="eyebrow">✦ Stil ✦</span>
-            <h2 id="lookbook-heading">Kako nositi {data.name}?</h2>
-            <p>Inspiracija za svaku priliku — od posla do večernjeg izlaska.</p>
+            <h2 id="guide-heading">Kako nositi {data.name}?</h2>
+            <p>Vodič za uklapanje — uz šta ide, gde je nositi, kako kombinovati.</p>
+            <div class="divider"></div>
+          </div>
+          <div style="background: #fff; border-radius: 16px; padding: 2rem 2.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); line-height: 1.85; color: var(--warm-grey); font-size: 1rem;">
+            {data.wearing_guide?.split('\n\n').map(para => (
+              <p style="margin-bottom: 1rem; color: var(--text);">{para}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Lookbook / Outfit images */}
+    {hasLookbook && (
+      <section class="product-section bg-blush-light" aria-labelledby="lookbook-heading">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">✦ Inspiracija ✦</span>
+            <h2 id="lookbook-heading">Outfit ideje sa {data.name}</h2>
+            <p>Pogledaj kako smo uklopili ovu torbicu u različite kombinacije.</p>
             <div class="divider"></div>
           </div>
           <div class="lookbook-grid">
@@ -279,7 +299,7 @@ const hasLookbook = data.lookbook_images && data.lookbook_images.length > 0;
             ))}
           </div>
           {data.has_pdf_guide && data.pdf_guide_url && (
-            <div style="text-align:center; margin-top:2rem">
+            <div style="text-align:center; margin-top:2.5rem">
               <a href={data.pdf_guide_url} class="btn btn-outline" download>
                 📥 Preuzmi style guide (PDF)
               </a>
