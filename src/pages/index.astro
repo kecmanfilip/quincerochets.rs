@@ -48,7 +48,7 @@ const schema = JSON.stringify({
       "itemListElement": products.map((p, i) => ({
         "@type": "ListItem",
         "position": i + 1,
-        "url": `https://quincerochets.rs/kolekcija/${p.id}/`,
+        "url": `https://quincerochets.rs/kolekcija/${p.id.replace(/\.md$/, '')}/`,
         "name": p.data.name
       }))
     }
@@ -97,7 +97,7 @@ const schema = JSON.stringify({
     <div class="product-grid container">
       {featured.map(p => p && (
         <ProductCard
-          slug={p.id}
+          slug={p.id.replace(/\.md$/, '')}
           name={p.data.name}
           size={p.data.size}
           type={p.data.type}

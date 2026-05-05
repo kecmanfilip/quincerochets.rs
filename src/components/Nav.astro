@@ -21,7 +21,7 @@ const products = allProducts.filter(p => !p.data.draft).sort((a, b) => {
       <a href="/kolekcija/" class="nav-link">Kolekcija <span class="nav-chevron">▾</span></a>
       <div class="nav-dropdown" role="menu">
         {products.map(p => (
-          <a href={`/kolekcija/${p.id}/`} class="dropdown-item" role="menuitem">
+          <a href={`/kolekcija/${p.id.replace(/\.md$/, '')}/`} class="dropdown-item" role="menuitem">
             <span>{p.data.name}</span>
             <span class="dropdown-item-size">{p.data.size}</span>
           </a>
@@ -42,7 +42,7 @@ const products = allProducts.filter(p => !p.data.draft).sort((a, b) => {
     <div class="nav-mobile-section-title">Kolekcija</div>
     <div class="nav-mobile-grid">
       {products.map(p => (
-        <a href={`/kolekcija/${p.id}/`} class="nav-mobile-model">{p.data.name}</a>
+        <a href={`/kolekcija/${p.id.replace(/\.md$/, '')}/`} class="nav-mobile-model">{p.data.name}</a>
       ))}
     </div>
     <a href="/blog/" class="nav-mobile-link">Blog</a>

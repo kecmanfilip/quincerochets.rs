@@ -166,7 +166,7 @@ const colorMap: Record<string, string> = {
         <div class="related-grid">
           {relatedProducts.map(p => (
             <ProductCard
-              slug={p.id}
+              slug={p.id.replace(/\.md$/, '')}
               name={p.data.name}
               size={p.data.size}
               type={p.data.type}

@@ -111,7 +111,7 @@ const schema = JSON.stringify({
         </div>
         <div class="blog-grid" style="margin-top:2rem">
           {relatedPosts.map(p => (
-            <a href={`/blog/${p.id}/`} class="blog-card">
+            <a href={`/blog/${p.id.replace(/\.md$/, '')}/`} class="blog-card">
               <div class="blog-card-image">
                 {p.data.cover_image ? (
                   <img src={p.data.cover_image} alt={p.data.title} width="400" height="260" loading="lazy" />
