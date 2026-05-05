@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'settings');
+const allProducts = await getCollection('products');
+const products = allProducts.filter(p => !p.data.draft);
+
+const featuredSlugs = ['fiona', 'milla', 'yara', 'dorothy', 'gia', 'maisie'];
+const featured = featuredSlugs
+  .map(slug => products.find(p => p.data.slug === slug))
+  .filter(Boolean);
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://quincerochets.rs/#organization",
+      "name": "Quincè crochèts",
+      "alternateName": ["Quince Crochets", "Quincè crochèts Srbija"],
+      "url": "https://quincerochets.rs/",
+      "logo": {"@type":"ImageObject","url":"https://quincerochets.rs/images/logo.jpg","width":800,"height":800},
+      "image": "https://quincerochets.rs/images/dve-torbe.jpg",
+      "description": settings?.data.about_text || "Ručno rađene pletene torbice od pamučnih traka.",
+      "address": {"@type":"PostalAddress","addressCountry":"RS","addressRegion":"Srbija"},
+      "areaServed": {"@type":"Country","name":"Srbija"},
+      "sameAs": ["https://www.instagram.com/quincecrochets/"],
+      "foundingDate": "2023"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://quincerochets.rs/#website",
+      "url": "https://quincerochets.rs/",
+      "name": "Quincè crochèts — Pletene Torbice Srbija",
+      "publisher": {"@id":"https://quincerochets.rs/#organization"},
+      "inLanguage": "sr-RS"
+    },
+    {
+      "@type": "ItemList",
+      "name": "Quincè crochèts kolekcija pletenih torbica",
+      "description": `${products.length} modela ručno rađenih chunky crochet torbica od pamučnih traka`,
+      "url": "https://quincerochets.rs/kolekcija/",
+      "numberOfItems": products.length,
+      "itemListElement": products.map((p, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "url": `https://quincerochets.rs/kolekcija/${p.data.slug}/`,
+        "name": p.data.name
+      }))
+    }
+  ]
+});
+---
+
+<Layout
+  title="Quincè crochèts | Ručno Rađene Pletene Torbice iz Srbije"
+  description="Ručno rađene chunky crochet torbice od pamučnih traka. 12 modela u bojama po izboru. Dostava na celoj teritoriji Srbije. Instagram: @quincecrochets"
+  ogImage="https://quincerochets.rs/images/dve-torbe.jpg"
+  ogImageAlt="Quincè crochèts ručno rađene pletene torbice — bordo i nude"
+  schema={schema}
+>
+  <Nav slot="nav" />
+
+  <section class="hero" aria-label="Naslovna">
+    <div class="hero-text">
+      <p class="hero-eyebrow">Ručno rađeno sa ljubavlju</p>
+      <h1 set:html={settings?.data.hero_title.replace('pletene torbice', '<em>pletene torbice</em>')} />
+      <p class="hero-desc">{settings?.data.hero_subtitle}</p>
+      <div class="hero-ctas">
+        <a href="/kolekcija/" class="btn btn-primary">{settings?.data.hero_cta_primary}</a>
+        <a href="/kontakt/" class="btn btn-outline">{settings?.data.hero_cta_secondary}</a>
+      </div>
+    </div>
+    <div class="hero-image-col">
+      <img src="/images/torbica-i-ruka.jpg" alt="Quincè crochèts bordo pletena torbica sa zlatnim lančićem — ručno rađena u Srbiji" class="hero-img-main" width="460" height="620" fetchpriority="high" loading="eager" />
+      <div class="hero-badge" aria-label="100% ručni rad">
+        <span class="hero-badge-icon" aria-hidden="true">🧶</span>
+        <div class="hero-badge-text">
+          <strong>100% ručni rad</strong>
+          <span>Jedinstven komad</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-cream" aria-labelledby="featured-heading">
+    <div class="section-header">
+      <span class="eyebrow">✦ Kolekcija ✦</span>
+      <h2 id="featured-heading">Istaknuti modeli</h2>
+      <p>Svaki model je jedinstven komad, ručno izrađen u Srbiji.</p>
+      <div class="divider"></div>
+    </div>
+    <div class="product-grid container">
+      {featured.map(p => p && (
+        <ProductCard
+          slug={p.data.slug}
+          name={p.data.name}
+          size={p.data.size}
+          type={p.data.type}
+          price={p.data.price}
+          badge={p.data.badge}
+          image={p.data.images[0]?.src}
+          imageAlt={p.data.images[0]?.alt}
+          description={p.data.description_short}
+          colors={p.data.colors}
+        />
+      ))}
+    </div>
+    <div style="text-align:center;margin-top:3rem">
+      <a href="/kolekcija/" class="btn btn-outline">Pogledaj svih {products.length} modela →</a>
+    </div>
+  </section>
+
+  <section class="section bg-blush" aria-labelledby="about-home-heading">
+    <div class="about-grid container">
+      <div class="about-images">
+        <img src="/images/dve-torbe.jpg" alt="Quincè crochèts kolekcija — bordo i nude pletene torbice sa zlatnim ukrasima" class="about-img-main" width="380" height="420" loading="lazy" />
+        <img src="/images/closeup-torbica.jpg" alt="Detalj chunky pletiva i zlatne brendirane pločice Quincè crochèts" class="about-img-secondary" width="300" height="280" loading="lazy" />
+      </div>
+      <div class="about-text">
+        <div class="section-header left">
+          <span class="eyebrow">✦ Naša priča ✦</span>
+          <h2 id="about-home-heading">Ručni rad koji se vidi</h2>
+          <div class="divider left"></div>
+        </div>
+        <p><strong>Quincè crochèts</strong> je mala radionica posvećena izradi ručno pletenih torbica od visokokvalitetnih pamučnih traka. Svaka torbica nastaje ručno, bez mašine.</p>
+        <p>Ne pravimo serije. Svaka narudžbina je posebna — biraš boju, model i veličinu, a mi napravimo tačno to.</p>
+        <div class="highlights-grid">
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">🧶</span><div><h4>Ručni rad</h4><p>Svaki šav ručno ispleteni</p></div></div>
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">🎨</span><div><h4>Boja po izboru</h4><p>Poruči u boji koju voliš</p></div></div>
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">✨</span><div><h4>Premium detalji</h4><p>Pozlaćena laser gravirana pločica</p></div></div>
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">📦</span><div><h4>Dostava po Srbiji</h4><p>Kurirska služba, kućna adresa</p></div></div>
+        </div>
+        <div style="margin-top:2rem"><a href="/o-nama/" class="btn btn-outline">Saznaj više o nama →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-cream" aria-labelledby="zasto-heading">
+    <div class="section-header">
+      <span class="eyebrow">✦ Prednosti ✦</span>
+      <h2 id="zasto-heading">Zašto Quincè crochèts?</h2>
+      <p>Svaka narudžbina je posebna. Evo šta dobijaš uz svaku torbicu.</p>
+      <div class="divider"></div>
+    </div>
+    <div class="features-grid container">
+      <div class="feature-card"><span class="feature-icon" aria-hidden="true">🎁</span><h3>Poklon pakovanje</h3><p>Svaka torbica stiže u lepom poklon pakovanju, odmah spremna za poklanjanje.</p></div>
+      <div class="feature-card"><span class="feature-icon" aria-hidden="true">⏱️</span><h3>5-7 dana izrade</h3><p>Vreme izrade je 5 do 7 radnih dana. Za hitne porudžbine, javi se direktno.</p></div>
+      <div class="feature-card"><span class="feature-icon" aria-hidden="true">🔄</span><h3>Custom narudžbine</h3><p>Boja, veličina, tip ručke. Reci nam šta želiš i napravimo tačno to.</p></div>
+    </div>
+  </section>
+
+  <section class="insta-section" aria-label="Instagram profil">
+    <h2>Prati nas na Instagramu</h2>
+    <p>Novi modeli, boje i inspiracija — svaki dan na @{settings?.data.instagram_handle}</p>
+    <a href={`https://www.instagram.com/${settings?.data.instagram_handle}/`} target="_blank" rel="noopener noreferrer" class="insta-link" aria-label={`Poseti Instagram @${settings?.data.instagram_handle}`}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      @{settings?.data.instagram_handle}
+    </a>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>

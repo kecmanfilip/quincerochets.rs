@@ -1,0 +1,138 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter(p => p.data.published)
+    .map(p => ({
+      params: { slug: p.data.slug },
+      props: { post: p },
+    }));
+}
+
+const { post } = Astro.props;
+const { data, render } = post;
+const { Content } = await render();
+
+const allPosts = await getCollection('blog');
+const relatedPosts = allPosts
+  .filter(p => p.data.published && p.data.slug !== data.slug)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const url = `https://quincerochets.rs/blog/${data.slug}/`;
+const formattedDate = data.date.toLocaleDateString('sr-RS', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": `${url}#article`,
+      "headline": data.title,
+      "description": data.excerpt,
+      "image": data.cover_image,
+      "datePublished": data.date.toISOString(),
+      "author": {"@type":"Person","name":data.author},
+      "publisher": {"@id":"https://quincerochets.rs/#organization"},
+      "url": url,
+      "inLanguage": "sr-RS"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Početna","item":"https://quincerochets.rs/"},
+        {"@type":"ListItem","position":2,"name":"Blog","item":"https://quincerochets.rs/blog/"},
+        {"@type":"ListItem","position":3,"name":data.title,"item":url}
+      ]
+    }
+  ]
+});
+---
+
+<Layout
+  title={`${data.title} | Quincè crochèts Blog`}
+  description={data.excerpt}
+  canonical={url}
+  ogType="article"
+  ogImage={data.cover_image}
+  ogImageAlt={data.title}
+  twitterImage={data.cover_image}
+  schema={schema}
+>
+  <Nav slot="nav" />
+
+  <div class="breadcrumb-bar container">
+    <nav class="breadcrumb" aria-label="Navigacioni put">
+      <a href="/">Početna</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/blog/">Blog</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">{data.title}</span>
+    </nav>
+  </div>
+
+  <article class="blog-post">
+    {data.cover_image && (
+      <img src={data.cover_image} alt={data.title} class="blog-post-cover" width="720" height="480" />
+    )}
+
+    <header class="blog-post-header">
+      <time datetime={data.date.toISOString()}>{formattedDate}</time>
+      <h1>{data.title}</h1>
+      {data.tags.length > 0 && (
+        <div class="blog-post-tags">
+          {data.tags.map(tag => <span class="blog-tag">{tag}</span>)}
+        </div>
+      )}
+    </header>
+
+    <div class="blog-post-content">
+      <Content />
+    </div>
+
+    <div class="blog-post-author">
+      <div class="blog-post-author-avatar">✨</div>
+      <div>
+        <div class="blog-post-author-name">{data.author}</div>
+        <div class="blog-post-author-role">Ručno rađene pletene torbice iz Srbije</div>
+      </div>
+    </div>
+
+    {relatedPosts.length > 0 && (
+      <div class="related-section" style="margin-top:4rem">
+        <div class="section-header left">
+          <span class="eyebrow">✦ Još iz bloga ✦</span>
+          <h2>Slični članci</h2>
+        </div>
+        <div class="blog-grid" style="margin-top:2rem">
+          {relatedPosts.map(p => (
+            <a href={`/blog/${p.data.slug}/`} class="blog-card">
+              <div class="blog-card-image">
+                {p.data.cover_image ? (
+                  <img src={p.data.cover_image} alt={p.data.title} width="400" height="260" loading="lazy" />
+                ) : (
+                  <div class="blog-card-placeholder"><span>🧶</span></div>
+                )}
+              </div>
+              <div class="blog-card-body">
+                <time datetime={p.data.date.toISOString()}>
+                  {p.data.date.toLocaleDateString('sr-RS', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </time>
+                <h3>{p.data.title}</h3>
+                <p>{p.data.excerpt}</p>
+                <span class="blog-card-read">Pročitaj →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </article>
+
+  <Footer slot="footer" />
+</Layout>

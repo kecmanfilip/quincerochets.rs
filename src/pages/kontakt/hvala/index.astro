@@ -1,0 +1,27 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+---
+
+<Layout
+  title="Hvala na porudžbini | Quincè crochèts"
+  description="Hvala na porudžbini! Javićemo ti se uskoro sa detaljima."
+  noindex={true}
+>
+  <Nav slot="nav" />
+
+  <section class="section bg-cream" style="padding-top: calc(var(--nav-h) + 4rem); text-align: center;">
+    <div class="container" style="max-width: 600px;">
+      <span style="font-size: 4rem; display: block; margin-bottom: 1rem;" aria-hidden="true">✨</span>
+      <h1 style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 1rem;">Hvala na porudžbini!</h1>
+      <p style="color: var(--warm-grey); font-size: 1.1rem; margin-bottom: 2rem;">Primili smo tvoju poruku. Javićemo ti se uskoro sa detaljima o izradi i isporuci.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/" class="btn btn-primary">Početna</a>
+        <a href="/kolekcija/" class="btn btn-outline">Kolekcija</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>

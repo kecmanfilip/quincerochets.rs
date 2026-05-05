@@ -1,0 +1,184 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products
+    .filter(p => !p.data.draft)
+    .map(p => ({
+      params: { slug: p.data.slug },
+      props: { product: p },
+    }));
+}
+
+const { product } = Astro.props;
+const { data } = product;
+
+const allProducts = await getCollection('products');
+const relatedProducts = data.related
+  .map(slug => allProducts.find(p => p.data.slug === slug))
+  .filter(Boolean)
+  .filter(p => !p.data.draft);
+
+const url = `https://quincerochets.rs/kolekcija/${data.slug}/`;
+const imgUrl = data.images[0]?.src || 'https://quincerochets.rs/images/logo.jpg';
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Product",
+      "@id": `${url}#product`,
+      "name": data.name,
+      "description": data.description_short,
+      "image": imgUrl,
+      "brand": {"@type":"Brand","name":"Quincè crochèts"},
+      "manufacturer": {"@id":"https://quincerochets.rs/#organization"},
+      "material": "pamučne trake, t-shirt yarn",
+      "color": [...data.colors, "po izboru"],
+      "countryOfOrigin": "RS",
+      "offers": {
+        "@type": "Offer",
+        "price": String(data.price),
+        "priceCurrency": "RSD",
+        "availability": "https://schema.org/MadeToOrder",
+        "seller": {"@id":"https://quincerochets.rs/#organization"},
+        "areaServed": {"@type":"Country","name":"Srbija"},
+        "itemCondition": "https://schema.org/NewCondition",
+        "priceValidUntil": "2026-12-31",
+        "url": url
+      },
+      "additionalProperty": [
+        {"@type":"PropertyValue","name":"Veličina","value":data.size},
+        {"@type":"PropertyValue","name":"Tip","value":data.type},
+        {"@type":"PropertyValue","name":"Dimenzije","value":data.dimensions},
+        {"@type":"PropertyValue","name":"Ručka","value":data.handle},
+        {"@type":"PropertyValue","name":"Vreme izrade","value":"5 do 7 radnih dana"}
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Početna","item":"https://quincerochets.rs/"},
+        {"@type":"ListItem","position":2,"name":"Kolekcija","item":"https://quincerochets.rs/kolekcija/"},
+        {"@type":"ListItem","position":3,"name":data.name,"item":url}
+      ]
+    }
+  ]
+});
+
+const colorMap: Record<string, string> = {
+  bordo: '#7a1522',
+  nude: '#c5a48a',
+  crna: '#3a2828',
+};
+---
+
+<Layout
+  title={`${data.name} — Ručno Rađena Pletena Torbica | Quincè crochèts`}
+  description={`${data.description_short} Quincè crochèts, Srbija. Cena: ${data.price.toLocaleString('sr-RS')} RSD. Dostava na celoj teritoriji Srbije.`}
+  canonical={url}
+  ogType="product"
+  ogImage={imgUrl}
+  ogImageAlt={`${data.name} — Quincè crochèts pletena torbica`}
+  twitterImage={imgUrl}
+  schema={schema}
+>
+  <Nav slot="nav" />
+
+  <div class="breadcrumb-bar container">
+    <nav class="breadcrumb" aria-label="Navigacioni put">
+      <a href="/">Početna</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a href="/kolekcija/">Kolekcija</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">{data.name}</span>
+    </nav>
+  </div>
+
+  <div class="product-detail">
+    <div class="product-detail-grid">
+      <div class="product-gallery">
+        {data.images[0] ? (
+          <img src={data.images[0].src} alt={data.images[0].alt} class="product-main-img" width="600" height="750" loading="eager" fetchpriority="high" />
+        ) : (
+          <div class="product-img-placeholder" aria-label={`${data.name} — fotografije uskoro`}>
+            <span class="pi-name">{data.name}</span>
+            <span class="pi-label">Fotografije uskoro</span>
+          </div>
+        )}
+        <img src="/images/closeup-torbica.jpg" alt="Detalj pletiva i zlatne pozlaćene pločice na Quincè crochèts torbici" class="product-detail-img" width="600" height="338" loading="lazy" />
+      </div>
+
+      <div class="product-info">
+        <span class="product-info-eyebrow">✦ Quincè crochèts ✦</span>
+        <h1>{data.name}</h1>
+        <p class="product-size-tag">{data.size_label} &middot; {data.type}</p>
+
+        <div class="product-price">{data.price.toLocaleString('sr-RS')} RSD</div>
+        <p class="product-price-note">Cena za jedan komad. Izrađeno na porudžbinu, vreme isporuke 5–7 radnih dana.</p>
+
+        <p class="product-desc">{data.description_full}</p>
+
+        <p class="colors-label">Dostupne boje</p>
+        <div class="color-options">
+          {data.colors.map(c => (
+            <div class="color-option" data-color={c} onclick="void(0)">
+              <div class="color-circle" style={`background:${colorMap[c] || c}`}></div>
+              <span>{c.charAt(0).toUpperCase() + c.slice(1)}</span>
+            </div>
+          ))}
+          <div class="color-option" data-color="custom" onclick="void(0)">
+            <div class="color-circle" style="background:linear-gradient(135deg,#fad4cf,#9b1c2e,#d4941a)"></div>
+            <span>Po izboru</span>
+          </div>
+        </div>
+
+        <dl class="product-details-grid">
+          <div class="detail-item"><dt>Veličina</dt><dd>{data.size} &mdash; {data.size_label}</dd></div>
+          <div class="detail-item"><dt>Dimenzije</dt><dd>{data.dimensions}</dd></div>
+          <div class="detail-item"><dt>Ručka</dt><dd>{data.handle}</dd></div>
+          <div class="detail-item"><dt>Materijal</dt><dd>Pamučne trake (t-shirt yarn)</dd></div>
+          <div class="detail-item"><dt>Brendirani detalj</dt><dd>Pozlaćena laser gravirana pločica</dd></div>
+          <div class="detail-item"><dt>Vreme izrade</dt><dd>5 do 7 radnih dana</dd></div>
+        </dl>
+
+        <div class="product-cta-box">
+          <p>Svaki komad se izrađuje na porudžbinu. Kontaktiraj nas putem Instagrama ili forme za porudžbinu.</p>
+          <a href={`/kontakt/?model=${data.slug}`} class="btn btn-gold btn-full" style="margin-bottom:0.8rem">Poruči {data.name} →</a>
+          <a href="https://www.instagram.com/quincecrochets/" target="_blank" rel="noopener noreferrer" class="btn btn-full" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)">DM na Instagram @quincecrochets</a>
+          <p class="product-cta-box-note" style="margin-top:0.8rem">Dostava kurirskom službom na celoj teritoriji Srbije.</p>
+        </div>
+      </div>
+    </div>
+
+    {relatedProducts.length > 0 && (
+      <div class="related-section" aria-labelledby="related-heading">
+        <div class="section-header">
+          <span class="eyebrow">✦ Pogledaj i ✦</span>
+          <h2 id="related-heading">Slični modeli</h2>
+          <div class="divider"></div>
+        </div>
+        <div class="related-grid">
+          {relatedProducts.map(p => (
+            <ProductCard
+              slug={p.data.slug}
+              name={p.data.name}
+              size={p.data.size}
+              type={p.data.type}
+              price={p.data.price}
+              image={p.data.images[0]?.src}
+              imageAlt={p.data.images[0]?.alt}
+            />
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+
+  <Footer slot="footer" />
+</Layout>

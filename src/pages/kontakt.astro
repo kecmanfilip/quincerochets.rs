@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'settings');
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "@id": "https://quincerochets.rs/kontakt/",
+  "name": "Kontakt — Quincè crochèts",
+  "description": "Kontaktiraj Quincè crochèts za porudžbinu ručno pletene torbice. Dostava na celoj teritoriji Srbije.",
+  "url": "https://quincerochets.rs/kontakt/",
+  "inLanguage": "sr-RS",
+  "publisher": {"@id":"https://quincerochets.rs/#organization"}
+});
+---
+
+<Layout
+  title="Kontakt | Quincè crochèts — Poruči Ručno Pletenu Torbicu"
+  description="Kontaktiraj Quincè crochèts za porudžbinu ručno pletene torbice. Dostava na celoj teritoriji Srbije."
+  canonical="https://quincerochets.rs/kontakt/"
+  schema={schema}
+>
+  <Nav slot="nav" />
+
+  <div class="breadcrumb-bar container">
+    <nav class="breadcrumb" aria-label="Navigacioni put">
+      <a href="/">Početna</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Kontakt</span>
+    </nav>
+  </div>
+
+  <section class="section contact-dark" aria-labelledby="contact-heading">
+    <div class="section-header">
+      <span class="eyebrow">✦ Porudžbina ✦</span>
+      <h2 id="contact-heading">Poruči svoju torbicu</h2>
+      <p>Izaberi model i boju, a mi ćemo ti se javiti sa detaljima.</p>
+      <div class="divider"></div>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2>Kako poručiti?</h2>
+        <div class="contact-steps">
+          <div class="contact-step">
+            <div class="contact-step-num">1</div>
+            <div>
+              <strong>Izaberi model</strong>
+              <p>Pogledaj kolekciju i izaberi torbicu koja ti se dopada.</p>
+            </div>
+          </div>
+          <div class="contact-step">
+            <div class="contact-step-num">2</div>
+            <div>
+              <strong>Odaberi boju</strong>
+              <p>Bordo, nude, crna — ili boja po tvom izboru.</p>
+            </div>
+          </div>
+          <div class="contact-step">
+            <div class="contact-step-num">3</div>
+            <div>
+              <strong>Pošalji porudžbinu</strong>
+              <p>Popuni formu ili pošalji DM na Instagram.</p>
+            </div>
+          </div>
+          <div class="contact-step">
+            <div class="contact-step-num">4</div>
+            <div>
+              <strong>Primaj torbicu</strong>
+              <p>Vreme izrade je {settings?.data.delivery_time}. Dostavljamo kurirskom službom.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-insta-box">
+          <p>Više voliš Instagram? Pošalji nam DM — odgovaramo brzo.</p>
+        </div>
+
+        <p class="contact-faq-link">Imaš pitanje? Pogledaj <a href="/faq/">FAQ</a> za brze odgovore.</p>
+      </div>
+
+      <div class="contact-form-card">
+        <h2>Forma za porudžbinu</h2>
+        <p>Popuni podatke i javićemo ti se sa detaljima.</p>
+        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/kontakt/hvala/" id="contactForm">
+          <p class="form-honey">
+            <label>Ne popunjavaj ovo: <input name="bot-field" /></label>
+          </p>
+          <div class="form-group">
+            <label for="ime">Ime i prezime</label>
+            <input type="text" id="ime" name="ime" required placeholder="Tvoje ime" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="tvoj@email.com" />
+          </div>
+          <div class="form-group">
+            <label for="model">Model</label>
+            <select id="model" name="model" required>
+              <option value="">Izaberi model</option>
+              <option value="Gia">Gia</option>
+              <option value="Evie">Evie</option>
+              <option value="Mini Fiona">Mini Fiona</option>
+              <option value="Fiona">Fiona</option>
+              <option value="Yara">Yara</option>
+              <option value="Mini Yara">Mini Yara</option>
+              <option value="Emma">Emma</option>
+              <option value="Maisie">Maisie</option>
+              <option value="Dorothy">Dorothy</option>
+              <option value="Claire">Claire</option>
+              <option value="Zara">Zara</option>
+              <option value="Milla">Milla</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="boja">Boja</label>
+            <select id="boja" name="boja" required>
+              <option value="">Izaberi boju</option>
+              <option value="Bordo">Bordo</option>
+              <option value="Nude">Nude</option>
+              <option value="Crna">Crna</option>
+              <option value="Druga (napiši u napomeni)">Druga (napiši u napomeni)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="napomena">Napomena</label>
+            <textarea id="napomena" name="napomena" rows="3" placeholder="Dodatne želje, pitanja..." />
+          </div>
+          <button type="submit" class="btn btn-gold btn-full">Pošalji porudžbinu →</button>
+          <p class="form-note">Podaci se koriste isključivo za kontakt povodom porudžbine.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>

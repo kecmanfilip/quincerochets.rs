@@ -1,0 +1,36 @@
+---
+export interface Props {
+  slug: string;
+  title: string;
+  date: Date;
+  excerpt: string;
+  cover_image?: string;
+  tags: string[];
+}
+
+const { slug, title, date, excerpt, cover_image, tags } = Astro.props;
+const formattedDate = date.toLocaleDateString('sr-RS', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<a href={`/blog/${slug}/`} class="blog-card">
+  <div class="blog-card-image">
+    {cover_image ? (
+      <img src={cover_image} alt={title} width="400" height="260" loading="lazy" />
+    ) : (
+      <div class="blog-card-placeholder">
+        <span>🧶</span>
+      </div>
+    )}
+  </div>
+  <div class="blog-card-body">
+    <time datetime={date.toISOString()}>{formattedDate}</time>
+    <h3>{title}</h3>
+    <p>{excerpt}</p>
+    {tags.length > 0 && (
+      <div class="blog-card-tags">
+        {tags.map(tag => <span class="blog-tag">{tag}</span>)}
+      </div>
+    )}
+    <span class="blog-card-read">Pročitaj →</span>
+  </div>
+</a>

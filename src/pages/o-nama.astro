@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'settings');
+
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": "https://quincerochets.rs/o-nama/",
+  "name": "O nama — Quincè crochèts",
+  "description": "Saznaj više o Quincè crochèts radionici, našem pristupu ručnom pletenju i materijalima koje koristimo.",
+  "url": "https://quincerochets.rs/o-nama/",
+  "inLanguage": "sr-RS",
+  "publisher": {"@id":"https://quincerochets.rs/#organization"}
+});
+---
+
+<Layout
+  title="O nama | Quincè crochèts — Ručni Rad koji se Vidi"
+  description="Saznaj više o Quincè crochèts radionici, našem pristupu ručnom pletenju i materijalima koje koristimo."
+  canonical="https://quincerochets.rs/o-nama/"
+  schema={schema}
+>
+  <Nav slot="nav" />
+
+  <div class="breadcrumb-bar container">
+    <nav class="breadcrumb" aria-label="Navigacioni put">
+      <a href="/">Početna</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">O nama</span>
+    </nav>
+  </div>
+
+  <section class="page-intro">
+    <span class="eyebrow">✦ Quincè crochèts ✦</span>
+    <h1>O nama</h1>
+    <p>Mala radionica, velika ljubav prema detalju.</p>
+  </section>
+
+  <section class="about-full bg-cream">
+    <div class="about-grid">
+      <div class="about-images">
+        <img src="/images/dve-torbe.jpg" alt="Quincè crochèts kolekcija — bordo i nude pletene torbice" class="about-img-main" width="380" height="420" loading="lazy" />
+        <img src="/images/closeup-torbica.jpg" alt="Detalj zlatne brendirane pločice Quincè crochèts" class="about-img-secondary" width="300" height="280" loading="lazy" />
+      </div>
+      <div class="about-text">
+        <h2 style="margin-bottom:1.5rem">Naša priča</h2>
+        <p><strong>Quincè crochèts</strong> je mala radionica posvećena izradi ručno pletenih torbica od visokokvalitetnih pamučnih traka. Svaka torbica nastaje ručno, bez mašine.</p>
+        <p>Ne pravimo serije. Svaka narudžbina je posebna — biraš boju, model i veličinu, a mi napravimo tačno to. Chunky crochet tehnika daje svakom komadu karakterističnu teksturu i volumen koji je prepoznatljiv na prvi pogled.</p>
+        <p>Svaki komad potpisujemo zlatnom pozlaćenom pločicom — detalj koji potvrđuje autentičnost i kvalitet rada. Naša misija je jednostavna: pravimo torbice koje ćeš nositi sa ponosom godinama.</p>
+        <div class="highlights-grid" style="margin-top:2rem">
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">🧶</span><div><h4>Ručni rad</h4><p>Svaki šav ručno ispleteni</p></div></div>
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">🎨</span><div><h4>Boja po izboru</h4><p>Poruči u boji koju voliš</p></div></div>
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">✨</span><div><h4>Premium detalji</h4><p>Pozlaćena laser gravirana pločica</p></div></div>
+          <div class="highlight-item"><span class="highlight-icon" aria-hidden="true">📦</span><div><h4>Dostava po Srbiji</h4><p>Kurirska služba, kućna adresa</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-process bg-blush-light">
+    <div class="section-header">
+      <span class="eyebrow">✦ Proces ✦</span>
+      <h2>Kako nastaje torbica</h2>
+      <p>Od ideje do gotovog proizvoda — svaki korak je pažljivo osmišljen.</p>
+      <div class="divider"></div>
+    </div>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-num">01</div>
+        <h3>Izbor materijala</h3>
+        <p>Koristimo visokokvalitetne pamučne trake (t-shirt yarn) koje su meke, trajne i ekološki prihvatljive. Svaka boja se bira pažljivo.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">02</div>
+        <h3>Ručno pletenje</h3>
+        <p>Svaka torbica se izrađuje ručno, bez mašine. Chunky crochet tehnika zahteva strpljenje i preciznost — svaki komad je jedinstven.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">03</div>
+        <h3>Završna obrada</h3>
+        <p>Nakon pletenja, svaki komad se pažljivo proverava, čisti i priprema za isporuku. Zlatna pločica se dodaje kao potpis autentičnosti.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">04</div>
+        <h3>Poklon pakovanje</h3>
+        <p>Svaka torbica stiže u lepom poklon pakovanju, spremna za poklanjanje ili za prvo nošenje odmah po prijemu.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="insta-section" aria-label="Instagram profil">
+    <h2>Prati našu priču</h2>
+    <p>Novi modeli, boje i inspiracija — svaki dan na @{settings?.data.instagram_handle}</p>
+    <a href={`https://www.instagram.com/${settings?.data.instagram_handle}/`} target="_blank" rel="noopener noreferrer" class="insta-link" aria-label={`Poseti Instagram @${settings?.data.instagram_handle}`}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      @{settings?.data.instagram_handle}
+    </a>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>

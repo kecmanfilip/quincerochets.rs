@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Stranica nije pronađena | Quincè crochèts"
+  description="Stranica koju tražiš ne postoji. Pogledaj našu kolekciju ručno pletenih torbica."
+  noindex={true}
+>
+  <Nav slot="nav" />
+
+  <section class="section bg-cream" style="padding-top: calc(var(--nav-h) + 4rem); text-align: center;">
+    <div class="container" style="max-width: 600px;">
+      <span style="font-size: 6rem; display: block; margin-bottom: 1rem;" aria-hidden="true">🧶</span>
+      <h1 style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem;">Stranica nije pronađena</h1>
+      <p style="color: var(--warm-grey); font-size: 1.1rem; margin-bottom: 2rem;">Izgleda da smo zapetljali nit. Stranica koju tražiš ne postoji ili je premestena.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/" class="btn btn-primary">Početna</a>
+        <a href="/kolekcija/" class="btn btn-outline">Kolekcija</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Layout>
