@@ -1,0 +1,68 @@
+---
+export interface Props {
+  slug: string;
+  name: string;
+  size: string;
+  type: string;
+  price: number;
+  badge?: string;
+  image?: string;
+  imageAlt?: string;
+  description?: string;
+  colors?: string[];
+  'data-size'?: string;
+  'data-chain'?: string;
+}
+
+const { slug, name, size, type, price, badge, image, imageAlt, description, colors } = Astro.props;
+
+const colorMap: Record<string, string> = {
+  bordo: '#7a1522',
+  nude: '#c5a48a',
+  crna: '#3a2828',
+};
+
+const dataSize = Astro.props['data-size'];
+const dataChain = Astro.props['data-chain'];
+---
+
+<a
+  href={`/kolekcija/${slug}/`}
+  class="product-card"
+  data-size={dataSize}
+  data-chain={dataChain}
+  aria-label={`${name} — ${size} pletena torbica, ${price.toLocaleString('sr-RS')} RSD`}
+>
+  <div class="product-card-img">
+    {image ? (
+      <img src={image} alt={imageAlt || `${name} — Quincè crochèts pletena torbica`} width="560" height="700" loading="lazy" />
+    ) : (
+      <div class="product-card-placeholder">
+        <span class="placeholder-icon" aria-hidden="true">🧶</span>
+        <span class="placeholder-name">{name}</span>
+        <span class="placeholder-label">Fotografije uskoro</span>
+      </div>
+    )}
+    {badge && (
+      <div class="card-badge-wrap">
+        <span class={`badge ${badge === 'Novo' || badge === 'Premium' ? 'badge-gold' : 'badge-crimson'}`}>{badge}</span>
+      </div>
+    )}
+  </div>
+  <div class="product-card-body">
+    <h3>{name}</h3>
+    <p class="card-size">{size} · {type}</p>
+    {description && <p>{description}</p>}
+    {colors && colors.length > 0 && (
+      <div class="color-swatches">
+        {colors.map(c => (
+          <span class="swatch" style={`background:${colorMap[c] || c}`} title={c}></span>
+        ))}
+      </div>
+    )}
+    <div class="card-bottom">
+      <span class="card-price">{price.toLocaleString('sr-RS')} RSD <small>/ kom</small></span>
+      <span class="card-arrow">→</span>
+    </div>
+  </div>
+</a>

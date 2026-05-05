@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+const allProducts = await getCollection('products');
+const products = allProducts.filter(p => !p.data.draft).sort((a, b) => {
+  const order = ['gia','evie','mini-fiona','fiona','yara','mini-yara','emma','maisie','dorothy','claire','zara','milla'];
+  return order.indexOf(a.data.slug) - order.indexOf(b.data.slug);
+});
+---
+
+<nav class="nav" aria-label="Glavna navigacija">
+  <a href="/" class="nav-logo-link" aria-label="Quincè crochèts početna">
+    <img src="/images/logo.jpg" alt="Quincè crochèts" class="nav-logo" width="42" height="42" />
+    <span class="nav-logo-name">Quincè crochèts</span>
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="Otvori meni" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-list">
+    <li><a href="/" class="nav-link">Početna</a></li>
+    <li class="nav-item">
+      <a href="/kolekcija/" class="nav-link">Kolekcija <span class="nav-chevron">▾</span></a>
+      <div class="nav-dropdown" role="menu">
+        {products.map(p => (
+          <a href={`/kolekcija/${p.data.slug}/`} class="dropdown-item" role="menuitem">
+            <span>{p.data.name}</span>
+            <span class="dropdown-item-size">{p.data.size}</span>
+          </a>
+        ))}
+        <div class="dropdown-footer"><a href="/kolekcija/">Pogledaj sve modele →</a></div>
+      </div>
+    </li>
+    <li><a href="/blog/" class="nav-link">Blog</a></li>
+    <li><a href="/o-nama/" class="nav-link">O nama</a></li>
+    <li><a href="/faq/" class="nav-link">FAQ</a></li>
+    <li><a href="/kontakt/" class="nav-link nav-cta">Poruči</a></li>
+  </ul>
+</nav>
+
+<div class="nav-mobile" id="navMobile" aria-label="Mobilni meni">
+  <div class="nav-mobile-list">
+    <a href="/" class="nav-mobile-link">Početna</a>
+    <div class="nav-mobile-section-title">Kolekcija</div>
+    <div class="nav-mobile-grid">
+      {products.map(p => (
+        <a href={`/kolekcija/${p.data.slug}/`} class="nav-mobile-model">{p.data.name}</a>
+      ))}
+    </div>
+    <a href="/blog/" class="nav-mobile-link">Blog</a>
+    <a href="/o-nama/" class="nav-mobile-link">O nama</a>
+    <a href="/faq/" class="nav-mobile-link">FAQ</a>
+    <a href="/kontakt/" class="nav-mobile-cta">Poruči</a>
+  </div>
+</div>
