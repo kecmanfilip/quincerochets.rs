@@ -1,0 +1,113 @@
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: "cms: create {{collection}} '{{slug}}'"
+    update: "cms: update {{collection}} '{{slug}}'"
+    delete: "cms: delete {{collection}} '{{slug}}'"
+    uploadMedia: "cms: upload '{{path}}'"
+    deleteMedia: "cms: delete '{{path}}'"
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+site_url: https://quincerochets.rs
+display_url: https://quincerochets.rs
+locale: 'sr'
+
+collections:
+  - name: "products"
+    label: "Kolekcija"
+    label_singular: "Torbica"
+    folder: "src/content/products"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Naziv", name: "name", widget: "string" }
+      - { label: "Slug (URL)", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Mala slova, brojevi i crtice"] }
+      - { label: "Cena (RSD)", name: "price", widget: "number", value_type: "int", min: 0 }
+      - label: "Veličina"
+        name: "size"
+        widget: "select"
+        options: ["XS", "S", "M", "M-L", "L"]
+      - { label: "Opis veličine", name: "size_label", widget: "string", hint: "npr. 'Srednja torbica'" }
+      - { label: "Tip", name: "type", widget: "string", hint: "npr. 'Bucket bag', 'Crossbody'" }
+      - { label: "Badge", name: "badge", widget: "select", options: ["", "Bestseler", "Novo", "Premium"], required: false }
+      - { label: "Kratki opis (SEO)", name: "description_short", widget: "text" }
+      - { label: "Puni opis", name: "description_full", widget: "markdown" }
+      - { label: "Dimenzije", name: "dimensions", widget: "string", hint: "npr. '~28 × 22 cm'" }
+      - { label: "Ručka", name: "handle", widget: "string" }
+      - label: "Boje"
+        name: "colors"
+        widget: "list"
+        field: { label: "Boja", name: "color", widget: "select", options: ["bordo", "nude", "crna"] }
+      - { label: "Sa lančićem", name: "has_chain", widget: "boolean", default: false }
+      - label: "Slike"
+        name: "images"
+        widget: "list"
+        fields:
+          - { label: "Slika", name: "src", widget: "image" }
+          - { label: "Alt tekst", name: "alt", widget: "string" }
+      - label: "Slični modeli"
+        name: "related"
+        widget: "relation"
+        collection: "products"
+        value_field: "slug"
+        search_fields: ["name", "slug"]
+        display_fields: ["name"]
+        multiple: true
+        required: false
+      - { label: "SEO naslov", name: "seo_title", widget: "string", required: false }
+      - { label: "SEO opis", name: "seo_description", widget: "text", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+
+  - name: "blog"
+    label: "Blog"
+    label_singular: "Članak"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Naslov", name: "title", widget: "string" }
+      - { label: "Slug (URL)", name: "slug", widget: "string", pattern: ['^[a-z0-9-]+$', "Mala slova, brojevi i crtice"] }
+      - { label: "Datum", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Izvod", name: "excerpt", widget: "text" }
+      - { label: "Naslovna slika", name: "cover_image", widget: "image", required: false }
+      - label: "Tagovi"
+        name: "tags"
+        widget: "list"
+        field: { label: "Tag", name: "tag", widget: "string" }
+        required: false
+      - { label: "Autor", name: "author", widget: "string", default: "Quincè crochèts" }
+      - { label: "Objavljen", name: "published", widget: "boolean", default: true }
+      - { label: "SEO naslov", name: "seo_title", widget: "string", required: false }
+      - { label: "SEO opis", name: "seo_description", widget: "text", required: false }
+      - { label: "Sadržaj", name: "body", widget: "markdown" }
+
+  - name: "settings"
+    label: "Podešavanja"
+    files:
+      - label: "Sajt"
+        name: "settings"
+        file: "src/content/settings.json"
+        fields:
+          - { label: "Hero naslov", name: "hero_title", widget: "string" }
+          - { label: "Hero podnaslov", name: "hero_subtitle", widget: "text" }
+          - { label: "Hero CTA primarni", name: "hero_cta_primary", widget: "string" }
+          - { label: "Hero CTA sekundarni", name: "hero_cta_secondary", widget: "string" }
+          - { label: "O nama tekst", name: "about_text", widget: "text" }
+          - { label: "Instagram handle", name: "instagram_handle", widget: "string" }
+          - { label: "Vreme isporuke", name: "delivery_time", widget: "string" }
+
+  - name: "faq"
+    label: "FAQ"
+    files:
+      - label: "Česta pitanja"
+        name: "faq"
+        file: "src/content/faq.json"
+        fields:
+          - label: "Pitanja i odgovori"
+            name: "faq"
+            widget: "list"
+            fields:
+              - { label: "Pitanje", name: "question", widget: "string" }
+              - { label: "Odgovor", name: "answer", widget: "text" }
