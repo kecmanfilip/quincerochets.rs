@@ -1,5 +1,6 @@
 ---
 name: "Yara"
+slug: "yara"
 price: 4200
 size: "M"
 size_label: "Srednja torbica"

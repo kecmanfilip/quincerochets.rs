@@ -1,5 +1,6 @@
 ---
 name: "Dorothy"
+slug: "dorothy"
 price: 3500
 size: "L"
 size_label: "Velika torbica"

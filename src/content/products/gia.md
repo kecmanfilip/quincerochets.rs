@@ -1,5 +1,6 @@
 ---
 name: "Gia"
+slug: "gia"
 price: 4300
 size: "S"
 size_label: "Mala torbica"

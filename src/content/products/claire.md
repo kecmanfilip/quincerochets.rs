@@ -1,5 +1,6 @@
 ---
 name: "Claire"
+slug: "claire"
 price: 5000
 size: "M"
 size_label: "Srednja torbica"

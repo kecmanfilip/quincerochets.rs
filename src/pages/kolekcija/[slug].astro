@@ -27,48 +27,67 @@ const relatedProducts = data.related
 const url = `https://quincerochets.rs/kolekcija/${product.id.replace(/\.md$/, "")}/`;
 const imgUrl = data.images[0]?.src || 'https://quincerochets.rs/images/logo.jpg';
 
+// Build schema with product FAQ if present
+const schemaGraph: any[] = [
+  {
+    "@type": "Product",
+    "@id": `${url}#product`,
+    "name": data.name,
+    "description": data.description_short,
+    "image": imgUrl,
+    "brand": {"@type":"Brand","name":"Quincè crochèts"},
+    "manufacturer": {"@id":"https://quincerochets.rs/#organization"},
+    "material": "pamučne trake, t-shirt yarn",
+    "color": [...data.colors, "po izboru"],
+    "countryOfOrigin": "RS",
+    "offers": {
+      "@type": "Offer",
+      "price": String(data.price),
+      "priceCurrency": "RSD",
+      "availability": "https://schema.org/MadeToOrder",
+      "seller": {"@id":"https://quincerochets.rs/#organization"},
+      "areaServed": {"@type":"Country","name":"Srbija"},
+      "itemCondition": "https://schema.org/NewCondition",
+      "priceValidUntil": "2026-12-31",
+      "url": url
+    },
+    "additionalProperty": [
+      {"@type":"PropertyValue","name":"Veličina","value":data.size},
+      {"@type":"PropertyValue","name":"Tip","value":data.type},
+      {"@type":"PropertyValue","name":"Dimenzije","value":data.dimensions},
+      {"@type":"PropertyValue","name":"Ručka","value":data.handle},
+      {"@type":"PropertyValue","name":"Vreme izrade","value":"5 do 7 radnih dana"}
+    ]
+  },
+  {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Početna","item":"https://quincerochets.rs/"},
+      {"@type":"ListItem","position":2,"name":"Kolekcija","item":"https://quincerochets.rs/kolekcija/"},
+      {"@type":"ListItem","position":3,"name":data.name,"item":url}
+    ]
+  }
+];
+
+// Add FAQPage schema if product has FAQ
+if (data.product_faq && data.product_faq.length > 0) {
+  schemaGraph.push({
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    "mainEntity": data.product_faq.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  });
+}
+
 const schema = JSON.stringify({
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Product",
-      "@id": `${url}#product`,
-      "name": data.name,
-      "description": data.description_short,
-      "image": imgUrl,
-      "brand": {"@type":"Brand","name":"Quincè crochèts"},
-      "manufacturer": {"@id":"https://quincerochets.rs/#organization"},
-      "material": "pamučne trake, t-shirt yarn",
-      "color": [...data.colors, "po izboru"],
-      "countryOfOrigin": "RS",
-      "offers": {
-        "@type": "Offer",
-        "price": String(data.price),
-        "priceCurrency": "RSD",
-        "availability": "https://schema.org/MadeToOrder",
-        "seller": {"@id":"https://quincerochets.rs/#organization"},
-        "areaServed": {"@type":"Country","name":"Srbija"},
-        "itemCondition": "https://schema.org/NewCondition",
-        "priceValidUntil": "2026-12-31",
-        "url": url
-      },
-      "additionalProperty": [
-        {"@type":"PropertyValue","name":"Veličina","value":data.size},
-        {"@type":"PropertyValue","name":"Tip","value":data.type},
-        {"@type":"PropertyValue","name":"Dimenzije","value":data.dimensions},
-        {"@type":"PropertyValue","name":"Ručka","value":data.handle},
-        {"@type":"PropertyValue","name":"Vreme izrade","value":"5 do 7 radnih dana"}
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type":"ListItem","position":1,"name":"Početna","item":"https://quincerochets.rs/"},
-        {"@type":"ListItem","position":2,"name":"Kolekcija","item":"https://quincerochets.rs/kolekcija/"},
-        {"@type":"ListItem","position":3,"name":data.name,"item":url}
-      ]
-    }
-  ]
+  "@graph": schemaGraph
 });
 
 const colorMap: Record<string, string> = {
@@ -76,6 +95,19 @@ const colorMap: Record<string, string> = {
   nude: '#c5a48a',
   crna: '#3a2828',
 };
+
+// Helper: extract YouTube embed URL
+function getYouTubeEmbedUrl(url: string | undefined): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+}
+
+const youtubeEmbed = getYouTubeEmbedUrl(data.fits_video);
+const hasGallery = data.images.length > 1;
+const hasFitsSection = !!(youtubeEmbed || data.fits_description);
+const hasProductFaq = data.product_faq && data.product_faq.length > 0;
+const hasLookbook = data.lookbook_images && data.lookbook_images.length > 0;
 ---
 
 <Layout
@@ -102,9 +134,36 @@ const colorMap: Record<string, string> = {
 
   <div class="product-detail">
     <div class="product-detail-grid">
+      {/* Gallery */}
       <div class="product-gallery">
         {data.images[0] ? (
-          <img src={data.images[0].src} alt={data.images[0].alt} class="product-main-img" width="600" height="750" loading="eager" fetchpriority="high" />
+          <>
+            <img 
+              id="mainGalleryImg"
+              src={data.images[0].src} 
+              alt={data.images[0].alt} 
+              class="product-main-img" 
+              width="600" 
+              height="750" 
+              loading="eager" 
+              fetchpriority="high" 
+            />
+            {hasGallery && (
+              <div class="gallery-thumbs">
+                {data.images.map((img, i) => (
+                  <button 
+                    class={`gallery-thumb ${i === 0 ? 'active' : ''}`}
+                    data-src={img.src}
+                    data-alt={img.alt}
+                    onclick={`document.getElementById('mainGalleryImg').src='${img.src}';document.getElementById('mainGalleryImg').alt='${img.alt}';document.querySelectorAll('.gallery-thumb').forEach(t=>t.classList.remove('active'));this.classList.add('active');`}
+                    aria-label={`Prikaži sliku: ${img.alt}`}
+                  >
+                    <img src={img.src} alt={img.alt} width="80" height="100" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div class="product-img-placeholder" aria-label={`${data.name} — fotografije uskoro`}>
             <span class="pi-name">{data.name}</span>
@@ -114,6 +173,7 @@ const colorMap: Record<string, string> = {
         <img src="/images/closeup-torbica.jpg" alt="Detalj pletiva i zlatne pozlaćene pločice na Quincè crochèts torbici" class="product-detail-img" width="600" height="338" loading="lazy" />
       </div>
 
+      {/* Info */}
       <div class="product-info">
         <span class="product-info-eyebrow">✦ Quincè crochèts ✦</span>
         <h1>{data.name}</h1>
@@ -156,6 +216,107 @@ const colorMap: Record<string, string> = {
       </div>
     </div>
 
+    {/* What Fits Section */}
+    {hasFitsSection && (
+      <section class="product-section bg-blush-light" aria-labelledby="fits-heading">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">✦ Praktičnost ✦</span>
+            <h2 id="fits-heading">Šta staje u {data.name}?</h2>
+            <p>Proverili smo — evo šta sve može da stane unutra.</p>
+            <div class="divider"></div>
+          </div>
+          <div class="fits-grid">
+            {youtubeEmbed && (
+              <div class="fits-video">
+                <div class="video-wrapper">
+                  <iframe 
+                    src={youtubeEmbed} 
+                    title={`Šta staje u ${data.name}`}
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              </div>
+            )}
+            {data.fits_description && (
+              <div class="fits-text">
+                <div set:html={data.fits_description} />
+                <div class="fits-items">
+                  <h4>Tipično staje:</h4>
+                  <ul>
+                    <li>📱 Telefon</li>
+                    <li>👛 Novčanik</li>
+                    <li>🔑 Ključevi</li>
+                    <li>💄 Šminka</li>
+                    <li>🕶️ Naočare</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Lookbook / Style Guide */}
+    {hasLookbook && (
+      <section class="product-section bg-cream" aria-labelledby="lookbook-heading">
+        <div class="container">
+          <div class="section-header">
+            <span class="eyebrow">✦ Stil ✦</span>
+            <h2 id="lookbook-heading">Kako nositi {data.name}?</h2>
+            <p>Inspiracija za svaku priliku — od posla do večernjeg izlaska.</p>
+            <div class="divider"></div>
+          </div>
+          <div class="lookbook-grid">
+            {data.lookbook_images.map(img => (
+              <figure class="lookbook-item">
+                <img src={img.src} alt={img.alt} width="400" height="500" loading="lazy" />
+                {img.caption && <figcaption>{img.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+          {data.has_pdf_guide && data.pdf_guide_url && (
+            <div style="text-align:center; margin-top:2rem">
+              <a href={data.pdf_guide_url} class="btn btn-outline" download>
+                📥 Preuzmi style guide (PDF)
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+
+    {/* Product FAQ */}
+    {hasProductFaq && (
+      <section class="product-section bg-white" aria-labelledby="product-faq-heading">
+        <div class="container" style="max-width: 800px">
+          <div class="section-header">
+            <span class="eyebrow">✦ Česta pitanja ✦</span>
+            <h2 id="product-faq-heading">Pitanja o {data.name}</h2>
+            <p>Sve što trebaš da znaš pre porudžbine ovog modela.</p>
+            <div class="divider"></div>
+          </div>
+          <div class="faq-list">
+            {data.product_faq.map((item, i) => (
+              <div class="faq-item">
+                <button class="faq-btn" aria-expanded="false" id={`pfaq-btn-${i}`} aria-controls={`pfaq-ans-${i}`}>
+                  {item.question}
+                  <span class="faq-icon" aria-hidden="true">+</span>
+                </button>
+                <div class="faq-answer" id={`pfaq-ans-${i}`} role="region" aria-labelledby={`pfaq-btn-${i}`}>
+                  <p>{item.answer}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {/* Related */}
     {relatedProducts.length > 0 && (
       <div class="related-section" aria-labelledby="related-heading">
         <div class="section-header">

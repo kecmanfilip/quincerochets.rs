@@ -1,5 +1,6 @@
 ---
 name: "Mini Fiona"
+slug: "mini-fiona"
 price: 4000
 size: "XS"
 size_label: "Mini torbica"

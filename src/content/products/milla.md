@@ -1,5 +1,6 @@
 ---
 name: "Milla"
+slug: "milla"
 price: 4800
 size: "L"
 size_label: "Velika torbica"

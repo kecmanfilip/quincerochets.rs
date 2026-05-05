@@ -56,6 +56,29 @@ collections:
         display_fields: ["name"]
         multiple: true
         required: false
+      # Šta staje u torbu
+      - { label: "Video (Šta staje)", name: "fits_video", widget: "string", hint: "YouTube URL npr. https://youtube.com/watch?v=...", required: false }
+      - { label: "Opis šta staje", name: "fits_description", widget: "markdown", hint: "Tekstualni opis šta sve može da stane u torbu", required: false }
+      # FAQ za tu torbu
+      - label: "FAQ za ovu torbicu"
+        name: "product_faq"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Pitanje", name: "question", widget: "string" }
+          - { label: "Odgovor", name: "answer", widget: "text" }
+      # Lookbook
+      - label: "Lookbook slike"
+        name: "lookbook_images"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Slika", name: "src", widget: "image" }
+          - { label: "Alt tekst", name: "alt", widget: "string" }
+          - { label: "Opis", name: "caption", widget: "string", hint: "npr. 'Fiona + boho haljina'", required: false }
+      - { label: "Ima PDF vodič", name: "has_pdf_guide", widget: "boolean", default: false }
+      - { label: "PDF vodič URL", name: "pdf_guide_url", widget: "string", hint: "Putanja do PDF fajla", required: false }
+      # SEO
       - { label: "SEO naslov", name: "seo_title", widget: "string", required: false }
       - { label: "SEO opis", name: "seo_description", widget: "text", required: false }
       - { label: "Draft", name: "draft", widget: "boolean", default: false }
@@ -88,7 +111,7 @@ collections:
     files:
       - label: "Sajt"
         name: "settings"
-        file: "src/content/settings.json"
+        file: "src/content/settings/settings.json"
         fields:
           - { label: "Hero naslov", name: "hero_title", widget: "string" }
           - { label: "Hero podnaslov", name: "hero_subtitle", widget: "text" }
@@ -103,7 +126,7 @@ collections:
     files:
       - label: "Česta pitanja"
         name: "faq"
-        file: "src/content/faq.json"
+        file: "src/content/faq/faq.json"
         fields:
           - label: "Pitanja i odgovori"
             name: "faq"

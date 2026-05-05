@@ -20,6 +20,23 @@ const products = defineCollection({
       alt: z.string(),
     })).default([]),
     related: z.array(z.string()).default([]),
+    // What fits section
+    fits_video: z.string().optional(),
+    fits_description: z.string().optional(),
+    // Product FAQ
+    product_faq: z.array(z.object({
+      question: z.string(),
+      answer: z.string(),
+    })).default([]),
+    // Lookbook / Style guide
+    lookbook_images: z.array(z.object({
+      src: z.string(),
+      alt: z.string(),
+      caption: z.string().optional(),
+    })).default([]),
+    has_pdf_guide: z.boolean().default(false),
+    pdf_guide_url: z.string().optional(),
+    // SEO
     seo_title: z.string().optional(),
     seo_description: z.string().optional(),
     draft: z.boolean().default(false),

@@ -1,5 +1,6 @@
 ---
 name: "Zara"
+slug: "zara"
 price: 4200
 size: "M"
 size_label: "Srednja torbica"

@@ -1,5 +1,6 @@
 ---
 name: "Maisie"
+slug: "maisie"
 price: 3200
 size: "M-L"
 size_label: "Srednje-velika torbica"

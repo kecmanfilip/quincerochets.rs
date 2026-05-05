@@ -1,5 +1,6 @@
 ---
 name: "Emma"
+slug: "emma"
 price: 3200
 size: "M"
 size_label: "Srednja torbica"

@@ -1,5 +1,6 @@
 ---
 name: "Fiona"
+slug: "fiona"
 price: 4500
 size: "M"
 size_label: "Srednja torbica"
