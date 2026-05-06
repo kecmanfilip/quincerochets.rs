@@ -5,19 +5,149 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quincè crochèts — Admin</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CMS Preview Styles ── */
+    .qr-preview {
+      font-family: 'Lato', sans-serif;
+      background: #fdf6f0;
+      padding: 1.5rem;
+      min-height: 100%;
+    }
+    .qr-preview-hero {
+      background: linear-gradient(135deg, #fde8e5 0%, #fad4cf 60%, #f9c5bc 100%);
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      text-align: center;
+    }
+    .qr-preview-hero h1 {
+      font-family: 'Playfair Display', serif;
+      color: #7a1522;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      line-height: 1.2;
+    }
+    .qr-preview-hero p {
+      color: #7a6a65;
+      max-width: 440px;
+      margin: 0 auto 1.8rem;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+    .qr-preview-btns {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .qr-preview-btn {
+      display: inline-block;
+      padding: 0.7rem 1.6rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .qr-preview-btn-primary {
+      background: #9b1c2e;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(155,28,46,0.25);
+    }
+    .qr-preview-btn-outline {
+      border: 2px solid #9b1c2e;
+      color: #9b1c2e;
+    }
+    .qr-preview-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.6rem;
+      margin-top: 1.2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .qr-preview-card h3 {
+      color: #d4941a;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .qr-preview-card p {
+      color: #7a6a65;
+      line-height: 1.7;
+      font-size: 0.92rem;
+      margin: 0;
+    }
+    .qr-preview-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
+    .qr-preview-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: #7a6a65;
+    }
+    .qr-preview-meta-item strong {
+      color: #3a2828;
+      font-weight: 700;
+    }
+  </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) {
-          window.netlifyIdentity.on('login', () => {
-            document.location.href = '/admin/';
-          });
-        }
+    (function() {
+      var h = React.createElement;
+
+      CMS.registerPreviewTemplate('settings', function(props) {
+        var entry = props.entry;
+        var data = entry.get('data').toJS ? entry.get('data').toJS() : {};
+
+        return h('div', { className: 'qr-preview' },
+          h('div', { className: 'qr-preview-hero' },
+            h('h1', {}, data.hero_title || 'Hero naslov'),
+            h('p', {}, data.hero_subtitle || 'Hero podnaslov'),
+            h('div', { className: 'qr-preview-btns' },
+              h('span', { className: 'qr-preview-btn qr-preview-btn-primary' }, data.hero_cta_primary || 'CTA'),
+              h('span', { className: 'qr-preview-btn qr-preview-btn-outline' }, data.hero_cta_secondary || 'CTA')
+            )
+          ),
+          h('div', { className: 'qr-preview-card' },
+            h('h3', {}, 'O nama'),
+            h('p', {}, data.about_text || 'Opis brenda...')
+          ),
+          h('div', { className: 'qr-preview-card' },
+            h('h3', {}, 'Kontakt & Dostava'),
+            h('div', { className: 'qr-preview-meta' },
+              h('span', { className: 'qr-preview-meta-item' },
+                h('strong', {}, 'Instagram:'), ' @' + (data.instagram_handle || 'handle')
+              ),
+              h('span', { className: 'qr-preview-meta-item' },
+                h('strong', {}, 'Isporuka:'), ' ' + (data.delivery_time || '5-7 dana')
+              )
+            )
+          )
+        );
       });
-    }
+
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', function(user) {
+          if (!user) {
+            window.netlifyIdentity.on('login', function() {
+              document.location.href = '/admin/';
+            });
+          }
+        });
+      }
+    })();
   </script>
 </body>
 </html>

@@ -110,8 +110,6 @@ collections:
 
   - name: "settings"
     label: "Podešavanja"
-    editor:
-      preview: false
     files:
       - label: "Sajt"
         name: "settings"
