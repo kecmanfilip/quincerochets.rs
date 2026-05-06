@@ -108,7 +108,6 @@ const hasGallery = data.images.length > 1;
 const hasFitsVideo = !!youtubeEmbed;
 const hasFitsText = !!data.fits_description;
 const hasFitsSection = hasFitsVideo || hasFitsText;
-const fitsGridClass = (hasFitsVideo && hasFitsText) ? 'fits-grid' : 'fits-grid single';
 const hasProductFaq = data.product_faq && data.product_faq.length > 0;
 const hasLookbook = data.lookbook_images && data.lookbook_images.length > 0;
 const hasWearingGuide = !!data.wearing_guide;
@@ -230,7 +229,7 @@ const hasWearingGuide = !!data.wearing_guide;
             <p>{data.name} je {data.size_label.toLowerCase()} ručno pletena od pamučnih traka, dimenzija {data.dimensions}. Proverili smo šta sve staje unutra — da znaš šta možeš da poneseš na posao, kafu sa prijateljicom ili večernji izlazak.</p>
             <div class="divider"></div>
           </div>
-          <div class={fitsGridClass}>
+          <div class="fits-grid">
             {hasFitsVideo && (
               <div class="fits-video">
                 <div class="video-wrapper">
