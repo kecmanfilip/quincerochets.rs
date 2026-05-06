@@ -105,15 +105,18 @@ function getYouTubeEmbedUrl(url: string | undefined): string | null {
 
 const youtubeEmbed = getYouTubeEmbedUrl(data.fits_video);
 const hasGallery = data.images.length > 1;
-const hasFitsSection = !!(youtubeEmbed || data.fits_description);
+const hasFitsVideo = !!youtubeEmbed;
+const hasFitsText = !!data.fits_description;
+const hasFitsSection = hasFitsVideo || hasFitsText;
+const fitsGridClass = (hasFitsVideo && hasFitsText) ? 'fits-grid' : 'fits-grid single';
 const hasProductFaq = data.product_faq && data.product_faq.length > 0;
 const hasLookbook = data.lookbook_images && data.lookbook_images.length > 0;
 const hasWearingGuide = !!data.wearing_guide;
 ---
 
 <Layout
-  title={`${data.name} — Ručno Rađena Pletena Torbica | Quincè crochèts`}
-  description={`${data.description_short} Quincè crochèts, Srbija. Cena: ${data.price.toLocaleString('sr-RS')} RSD. Dostava na celoj teritoriji Srbije.`}
+  title={data.seo_title || `${data.name} — Ručno Rađena Pletena Torbica | Quincè crochèts`}
+  description={data.seo_description || `${data.description_short} Quincè crochèts, Srbija. Cena: ${data.price.toLocaleString('sr-RS')} RSD. Dostava na celoj teritoriji Srbije.`}
   canonical={url}
   ogType="product"
   ogImage={imgUrl}
@@ -223,17 +226,17 @@ const hasWearingGuide = !!data.wearing_guide;
         <div class="container">
           <div class="section-header">
             <span class="eyebrow">✦ Praktičnost ✦</span>
-            <h2 id="fits-heading">Šta staje u {data.name}?</h2>
-            <p>Proverili smo — evo šta sve može da stane unutra.</p>
+            <h2 id="fits-heading">Šta sve može da stane u {data.name} torbicu?</h2>
+            <p>{data.name} je {data.size_label.toLowerCase()} ručno pletena od pamučnih traka, dimenzija {data.dimensions}. Proverili smo šta sve staje unutra — da znaš šta možeš da poneseš na posao, kafu sa prijateljicom ili večernji izlazak.</p>
             <div class="divider"></div>
           </div>
-          <div class="fits-grid">
-            {youtubeEmbed && (
+          <div class={fitsGridClass}>
+            {hasFitsVideo && (
               <div class="fits-video">
                 <div class="video-wrapper">
                   <iframe 
                     src={youtubeEmbed} 
-                    title={`Šta staje u ${data.name}`}
+                    title={`Šta staje u ${data.name} torbicu — video`}
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowfullscreen
@@ -241,17 +244,19 @@ const hasWearingGuide = !!data.wearing_guide;
                 </div>
               </div>
             )}
-            {data.fits_description && (
+            {hasFitsText && (
               <div class="fits-text">
-                <div set:html={data.fits_description} />
+                {data.fits_description?.split('\n\n').map(para => (
+                  <p class="fits-lead">{para}</p>
+                ))}
                 <div class="fits-items">
-                  <h4>Tipično staje:</h4>
+                  <h4>Tipično staje u {data.name}:</h4>
                   <ul>
-                    <li>📱 Telefon</li>
-                    <li>👛 Novčanik</li>
-                    <li>🔑 Ključevi</li>
-                    <li>💄 Šminka</li>
-                    <li>🕶️ Naočare</li>
+                    <li>📱 <span>Veliki smart telefon</span></li>
+                    <li>👛 <span>Novčanik i kartice</span></li>
+                    <li>🔑 <span>Ključevi</span></li>
+                    <li>💄 <span>Šminka</span></li>
+                    <li>🕶️ <span>Naočare za sunce</span></li>
                   </ul>
                 </div>
               </div>
